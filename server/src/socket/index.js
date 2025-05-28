@@ -1,4 +1,5 @@
 import { Server } from "socket.io";
+import { handleJoinRooms } from "../controllers/room.controller.js";
 
 export const initSocket = (server) => {
   io = new Server(server, {
@@ -11,8 +12,15 @@ export const initSocket = (server) => {
   io.on("connection", (socket) => {
     console.log("socket connected : ", socket.id);
 
-    socket.on("disconnect", (socket) => {
+    socket.on("disconnect", () => {
       console.log("socket disconnected : ", socket.id);
     });
+
+    socket.on("joinRoom", ({ roomCode, playerName }) => {
+      console.log("room joined successfully", socket.id);
+      handleJoinRooms(socket, roomCode, playerName);
+    });
+
+
   });
 };
