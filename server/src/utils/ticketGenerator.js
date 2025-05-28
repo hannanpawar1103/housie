@@ -38,13 +38,13 @@ const ticketGenerator = () => {
         .map((n, i) => (n = !null ? i : null))
         .filter((i) => i != null)
         .sort(() => Math.random() - 0.5)
-        .slice(0,toremove)
-        console.log(indices)
-        for(const i of indices){
-          ticket[row][i] = null
-        }
+        .slice(0, toremove);
+      console.log(indices);
+      for (const i of indices) {
+        ticket[row][i] = null;
+      }
     }
   }
 };
 
-ticketGenerator();
+export { ticketGenerator };
