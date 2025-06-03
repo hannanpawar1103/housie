@@ -39,12 +39,14 @@ const ticketGenerator = () => {
         .filter((i) => i != null)
         .sort(() => Math.random() - 0.5)
         .slice(0, toremove);
-      console.log(indices);
+      // console.log(indices);
       for (const i of indices) {
         ticket[row][i] = null;
       }
     }
   }
+  // console.log("ticket",ticket)
 };
 
+// ticketGenerator();
 export { ticketGenerator };

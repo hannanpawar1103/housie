@@ -1,7 +1,7 @@
 import { ticketGenerator } from "../utils/ticketGenerator.js";
-import { asyncHandler } from "../utils/asyncHandler.js";
+import rooms from "../utils/rooms.js";
 
-const rooms = {};
+
 
 const handleCreateRooms = (socket, playerName) => {
   const ticket = ticketGenerator();
