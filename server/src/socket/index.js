@@ -66,13 +66,15 @@ export const initSocket = (server) => {
       const room = rooms[roomCode];
 
       if (!room) {
-        throw new ApiError(500, "Room does not exist");
+        socket.emit("invalidClaim", { message: "Room does not exist" });
+        return;
       }
 
       const player = room.player.find((user) => (user.name = playerName));
 
       if (!player) {
-        throw new ApiError(500, "Room does not exist");
+        socket.emit("invalidClaim", { message: "User does not exist" });
+        return;
       }
 
       if (!player.markedNumbers) {
@@ -87,6 +89,35 @@ export const initSocket = (server) => {
         number,
         markedNumbers: player.markedNumbers,
       });
+    });
+
+    socket.on("claimWin", ({ roomCode, playerName, pattern }) => {
+      const room = rooms[roomCode];
+
+      if (!room) {
+        socket.emit("invalidClaim", { message: "Room does not exist" });
+        return;
+      }
+
+      const player = room.playerName.find((user) => (user.name = playerName));
+
+      if (!player) {
+        socket.emit("invalidClaim", { message: "User does not exist" });
+        return;
+      }
+
+      const isValid = { player, pattern };
+      if (isValid) {
+        io.to(roomCode).emit("winClaimed", {
+          playerName,
+          pattern,
+        });
+      }
+      if (!isValid) {
+        socket.emit("InvalidClaim", {
+          message: "Invalid claim for Win",
+        });
+      }
     });
   });
 };
