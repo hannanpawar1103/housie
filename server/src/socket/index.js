@@ -44,13 +44,18 @@ export const initSocket = (server) => {
       rooms[roomCode].calledNumbers = [];
       rooms[roomCode].intervalId = null;
 
-      let i = 0;
       rooms[roomCode].intervalId = setInterval(() => {
-        console.log(numbers[i]);
-        i++;
-        if (i >= numbers.length) {
+        const nextNumber = rooms[roomCode].remainingNumbers.shift();
+        rooms[roomCode].calledNumbers.push(nextNumber);
+        console.log(nextNumber);
+        io.to(roomCode).emit("numberCalled", {
+          number: nextNumber,
+          calledNumbers: rooms[roomCode].calledNumbers,
+        });
+        if (rooms[roomCode].remainingNumbers.length === 0) {
           clearInterval(rooms[roomCode].intervalId);
           console.log("all numbers are called");
+          io.to(roomCode).emit("gameEnded");
         }
       }, 10000);
     });
