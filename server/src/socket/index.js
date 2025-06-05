@@ -1,5 +1,7 @@
 import { Server } from "socket.io";
 import { handleJoinRooms } from "../controllers/room.controller.js";
+import { ApiError } from "../utils/ApiError.js";
+
 import rooms from "../utils/rooms.js";
 
 export const initSocket = (server) => {
@@ -58,6 +60,33 @@ export const initSocket = (server) => {
           io.to(roomCode).emit("gameEnded");
         }
       }, 10000);
+    });
+
+    socket.on("markNumber", ({ roomCode, playerName, number }) => {
+      const room = rooms[roomCode];
+
+      if (!room) {
+        throw new ApiError(500, "Room does not exist");
+      }
+
+      const player = room.player.find((user) => (user.name = playerName));
+
+      if (!player) {
+        throw new ApiError(500, "Room does not exist");
+      }
+
+      if (!player.markedNumbers) {
+        player.markedNumbers = [];
+      }
+
+      if (!player.markedNumbers.includes(number)) {
+        player.markedNumbers.push(number);
+      }
+
+      socket.emit("numberMarked", {
+        number,
+        markedNumbers: player.markedNumbers,
+      });
     });
   });
 };
