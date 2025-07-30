@@ -1,8 +1,6 @@
 import { ticketGenerator } from "../utils/ticketGenerator.js";
 import rooms from "../utils/rooms.js";
 
-
-
 const handleCreateRooms = (socket, playerName) => {
   const ticket = ticketGenerator();
   const roomCode = generateRoomCode();

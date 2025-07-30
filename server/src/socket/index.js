@@ -36,7 +36,7 @@ export const initSocket = (server) => {
         const j = Math.floor(Math.random() * (i + 1));
         [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
       }
-      console.log(numbers);
+      // console.log(numbers);
 
       if (!rooms[roomCode]) {
         rooms[roomCode] = {};
@@ -70,7 +70,7 @@ export const initSocket = (server) => {
         return;
       }
 
-      const player = room.player.find((user) => (user.name = playerName));
+      const player = room.players.find((user) => user.name === playerName);
 
       if (!player) {
         socket.emit("invalidClaim", { message: "User does not exist" });
@@ -81,9 +81,25 @@ export const initSocket = (server) => {
         player.markedNumbers = [];
       }
 
-      if (!player.markedNumbers.includes(number)) {
-        player.markedNumbers.push(number);
+      const flatTicket = player.ticket.flat();
+      if (!flatTicket.includes(number)) {
+        socket.emit("invalidClaim", { message: "Number not in ticket" });
+        return;
       }
+
+      if (!room.calledNumbers.includes(number)) {
+        socket.emit("invalidClaim", { message: "Number not called yet" });
+        return;
+      }
+
+      if (player.markedNumbers && player.markedNumbers.includes(number)) {
+        socket.emit("invalidClaim", { message: "Number already marked" });
+        return;
+      }
+
+      if (!player.markedNumbers) player.markedNumbers = [];
+
+      player.markedNumbers.push(number);
 
       socket.emit("numberMarked", {
         number,
@@ -99,7 +115,7 @@ export const initSocket = (server) => {
         return;
       }
 
-      const player = room.playerName.find((user) => (user.name = playerName));
+      const player = room.playerName.find((user) => user.name === playerName);
 
       if (!player) {
         socket.emit("invalidClaim", { message: "User does not exist" });

@@ -35,7 +35,7 @@ const ticketGenerator = () => {
     const toremove = filledcols - 5;
     if (toremove > 0) {
       const indices = ticket[row]
-        .map((n, i) => (n = !null ? i : null))
+        .map((n, i) => (n != null ? i : null))
         .filter((i) => i != null)
         .sort(() => Math.random() - 0.5)
         .slice(0, toremove);
@@ -45,6 +45,7 @@ const ticketGenerator = () => {
       }
     }
   }
+  return ticket;
   // console.log("ticket",ticket)
 };
 
