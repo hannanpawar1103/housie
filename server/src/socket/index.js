@@ -1,11 +1,12 @@
 import { Server } from "socket.io";
 import { handleJoinRooms } from "../controllers/room.controller.js";
 import { ApiError } from "../utils/ApiError.js";
+import { patternChecker } from "../utils/patternChecker.js";
 
 import rooms from "../utils/rooms.js";
 
 export const initSocket = (server) => {
-  io = new Server(server, {
+  const io = new Server(server, {
     cors: {
       origin: "*",
       methods: ["GET", "POST"],
@@ -115,23 +116,40 @@ export const initSocket = (server) => {
         return;
       }
 
-      const player = room.playerName.find((user) => user.name === playerName);
+      const player = room.players.find((user) => user.name === playerName);
 
       if (!player) {
         socket.emit("invalidClaim", { message: "User does not exist" });
         return;
       }
 
-      const isValid = { player, pattern };
+      if (!room.claimedPatterns) {
+        room.claimedPatterns = [];
+      }
+
+      if (room.claimedPatterns.includes(pattern)) {
+        socket.emit("invalidClaim", {
+          message: `${pattern} has already been claimed.`,
+        });
+        return;
+      }
+
+      const isValid = patternChecker(
+        player.ticket,
+        player.markedNumbers,
+        pattern
+      );
+
       if (isValid) {
+        room.claimedPatterns.push(pattern);
+
         io.to(roomCode).emit("winClaimed", {
           playerName,
           pattern,
         });
-      }
-      if (!isValid) {
-        socket.emit("InvalidClaim", {
-          message: "Invalid claim for Win",
+      } else {
+        socket.emit("invalidClaim", {
+          message: `Invalid claim for pattern: ${pattern}`,
         });
       }
     });
