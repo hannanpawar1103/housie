@@ -25,6 +25,8 @@ export const initSocket = (server) => {
       handleJoinRooms(socket, roomCode, playerName);
     });
 
+    
+
     socket.on("startGame", (roomCode) => {
       const shuffledNumber = [];
       for (let i = 1; i <= 90; i++) {
@@ -40,7 +42,8 @@ export const initSocket = (server) => {
       // console.log(numbers);
 
       if (!rooms[roomCode]) {
-        rooms[roomCode] = {};
+        socket.emit("invalidClaim", { message: "Room does not exist" });
+        return;
       }
 
       rooms[roomCode].remainingNumbers = numbers;
