@@ -1,11 +1,10 @@
 import { Server } from "socket.io";
 import { handleJoinRooms } from "../controllers/room.controller.js";
-import { ApiError } from "../utils/ApiError.js";
 import { patternChecker } from "../utils/patternChecker.js";
 
 import rooms from "../utils/rooms.js";
 
-export const initSocket = (server) => {
+const initSocket = (server) => {
   const io = new Server(server, {
     cors: {
       origin: "*",
@@ -158,3 +157,5 @@ export const initSocket = (server) => {
     });
   });
 };
+
+export default initSocket
