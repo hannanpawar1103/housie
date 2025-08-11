@@ -1,13 +1,16 @@
-import http from "http";
-import app from "./app.js";
-import initSocket from "./socket/index.js";
-
-const port = process.env.PORT || 3000;
-
-const server = http.createServer(app);
-
-initSocket(server);
-
-server.listen(port, (req, res) => {
-  console.log("server is listening at port no :", port);
+// require('dotenv').config({path: './env'})
+import dotenv from "dotenv";
+import { app } from "./app.js";
+dotenv.config({
+  path: "./.env",
 });
+
+connectDB()
+  .then(() => {
+    app.listen(process.env.PORT, "0.0.0.0", () => {
+      console.log(`Server is running at port : ${process.env.PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.log("MONGO db connection failed !!! ", err);
+  });
