@@ -16,9 +16,8 @@ function patternChecker(ticket, markedNumbers, pattern) {
       });
 
     case "fullhouse":
-      return ticket.flat().every((num) => {
-        num === nul ? true : markedNumbers.includes(num);
-      });
+      return ticket.flat().every((num) => num === nul ? true : markedNumbers.includes(num));
+
 
     default:
       return false;

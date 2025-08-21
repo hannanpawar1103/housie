@@ -24,8 +24,6 @@ const initSocket = (server) => {
       handleJoinRooms(socket, roomCode, playerName);
     });
 
-    
-
     socket.on("startGame", (roomCode) => {
       const shuffledNumber = [];
       for (let i = 1; i <= 90; i++) {
@@ -53,6 +51,7 @@ const initSocket = (server) => {
         const nextNumber = rooms[roomCode].remainingNumbers.shift();
         rooms[roomCode].calledNumbers.push(nextNumber);
         console.log(nextNumber);
+
         io.to(roomCode).emit("numberCalled", {
           number: nextNumber,
           calledNumbers: rooms[roomCode].calledNumbers,
@@ -158,4 +157,4 @@ const initSocket = (server) => {
   });
 };
 
-export default initSocket
+export default initSocket;

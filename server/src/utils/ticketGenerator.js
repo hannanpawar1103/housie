@@ -15,7 +15,7 @@ const ticketGenerator = () => {
 
   const Definerange = ticketRange.map(([min, max]) => {
     const nums = [];
-    for (let i = min; i < max; i++) nums.push(i);
+    for (let i = min; i <= max; i++) nums.push(i);
     const randomNums = nums.sort(() => Math.random() - 0.5).slice(0, 3);
     // console.log(randomNums)
     return randomNums;
