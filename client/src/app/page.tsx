@@ -50,11 +50,57 @@ export default function Page() {
         setCalledNumbers(calledNumbers)
       }
     );
-  }, []);
+
+    return () => {
+      socket.off("roomCreated");
+      socket.off("playerJoined");
+      socket.off("lobbyUpdated");
+      socket.off("numberCalled");
+    }
+   }, []);
+
+   const createRoom = () => {
+    socket.emit('createRoom',{playerName})
+   }
+   const joinRoom = () => {
+    socket.emit('joinRoom',{playerName , roomCode})
+   }
+   const startGame = () => {
+    socket.emit('startGame',{myRoomCode})
+   }
 
   return (
     <>
-      <h1>Hello, Next.js!</h1>
+    <div>
+      <h1>housie testing</h1>
+      <input type="enter your name" value={playerName} onChange={(e) => setPlayerName(e.target.value)} />
+      <button onClick={createRoom}>create room</button>
+      <input
+        placeholder="Enter Room Code"
+        value={roomCode}
+        onChange={(e) => setRoomCode(e.target.value)}
+      />
+      <button onClick={joinRoom}>Join Room</button>
+      {myRoomCode && (
+        <div>
+          <h2>Room: {myRoomCode}</h2>
+          <button onClick={startGame}>Start Game</button>
+
+          <h3>Players:</h3>
+          <ul>
+            {players.map((p, idx) => (
+              <li key={idx}>{p.name}</li>
+            ))}
+          </ul>
+
+          <h3>My Ticket:</h3>
+          <pre>{JSON.stringify(ticket, null, 2)}</pre>
+
+          <h3>Called Numbers:</h3>
+          <div>{calledNumbers.join(", ")}</div>
+        </div>
+      )}
+    </div>
     </>
   );
 }

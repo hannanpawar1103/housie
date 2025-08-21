@@ -19,6 +19,11 @@ const initSocket = (server) => {
       console.log("socket disconnected : ", socket.id);
     });
 
+    // socket.on("createRoom", ({ playerName }) => {
+    //   handleCreateRooms(socket, playerName);
+    //   console.log('hello room created')
+    // });
+
     socket.on("joinRoom", ({ roomCode, playerName }) => {
       console.log("room joined successfully", socket.id);
       handleJoinRooms(socket, roomCode, playerName);
